@@ -1,0 +1,24 @@
+---
+- name: Update Crontab for Monthly Maintenance Windows
+  hosts: webservers
+  tasks:
+    - name: Crontab Time and Date Update
+      ####
+      #  A comment line will be added before the entry:
+      #  #Ansible: <name>
+      #  min hour day month dayofweek command
+      #
+      #  Note: If the name changes, then a new entry will be
+      #  added and the exsiting one will not be updated. This
+      #  can lead to a condition where there are multiple cron
+      #  entries for the same purpose, be careful when changing
+      #  the name or the existing crontab entry.
+      ####
+      cron:
+        name: Monthly Maintenance Window Kill Crons
+        job: kill_commands.sh >> /log_dir/kill.log
+        minute: 00
+        hour: 12
+        day: 11
+        month: 06
+        state: present
