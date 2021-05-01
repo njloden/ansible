@@ -1,0 +1,35 @@
+---
+- name: Backup state of crontabs and filesystems before maintenance window
+  hosts: prod_app
+  vars:
+    - MW: MWCC20210501
+    - lab_node: labmachine.lab.example.com
+  tasks:
+    - name: capture disk free output
+      shell: df -h 
+      register: df_output
+
+    - debug:
+        var: df_output.stdout
+
+    - name: write output to lab backup machine 
+      copy:
+        content: "{{ df_output.stdout }}"
+        dest: "/tmp/{{ MW }}_{{ inventory_hostname }}_{{ ansible_user }}_disk_free_copy_to_lab.bak"
+      delegate_to: "{{ lab_node }}"
+
+
+    - name: capture crontab backup of current user
+      shell: crontab -l
+      register: crontab_output
+
+    - debug:
+        var: crontab_output.stdout
+
+    - name: write output to lab backup machine
+      copy:
+        content: "{{ crontab_output.stdout }}"
+        dest: "/tmp/{{ MW }}_{{ inventory_hostname }}_{{ ansible_user }}_crontab_copy_to_lab.bak" 
+      delegate_to: "{{ lab_node }}" 
+
+

@@ -1,0 +1,5 @@
+[prod_app]
+prodmachine.prod.example.com
+
+[lab_backup]
+labmachine.lab.example.com
