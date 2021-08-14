@@ -1,7 +1,7 @@
 ## Prerequisites:
 Install ansible on a control node before proceeding.
 
-Official Ansible install reference:
+Official Ansible install reference:  
 https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
 
 ## Build Procedure:
