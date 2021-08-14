@@ -1,0 +1,30 @@
+---
+- name: Install, configure, and test out a lamp stack 
+  hosts: webservers
+  tasks:
+    - name: Ensure apache httpd package is installed and up to date
+      yum:
+        name: httpd
+        state: latest
+    - name: Copy in custom index.html file
+      copy:
+        src: files/index.html
+        dest: /var/www/html/index.html
+    - name: Start apache httpd service and make persistent
+      service:
+        name: httpd
+        state: started
+        enabled: true
+    - name: Update firewall to allow incoming http requests to apache service
+      firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: yes
+    - name: Test apache
+      uri:
+        url: "http://{{ inventory_hostname }}"
+        return_content: yes
+        status_code: 200
+      
+
