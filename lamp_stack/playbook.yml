@@ -2,6 +2,18 @@
 - name: Install, configure, and test out a lamp stack 
   hosts: webservers
   tasks:
+    ####
+    # Firewalld setup
+    ####
+    - name: Ensure firewalld is enabled and running
+      service:
+        name: firewalld
+        enabled: true
+        state: started
+
+    ####
+    # Apache http setup
+    ####
     - name: Ensure apache httpd package is installed and up to date
       yum:
         name: httpd
@@ -26,5 +38,64 @@
         url: "http://{{ inventory_hostname }}"
         return_content: yes
         status_code: 200
-      
+      register: apache_test_output
+    - name: Print content of index.html
+      debug:
+        var: apache_test_output.content
+     
+    ####
+    # MariaDB setup
+    ####
+    - name: Ensure the MariaDB packages are installed and up to date
+      yum:
+        name: 
+          - mariadb-server
+          - python3-mysqlclient
+        state: latest
+    - name: Start MariaDB service and make persistent
+      service:
+        name: mariadb
+        state: started
+        enabled: true
+    - name: Create user to test connection with database
+      mysql_user:
+        name: db_user
+        password: db_pass
+        state: present
+
+    ####
+    # PHP setup
+    ####
+    - name: Ensure the PHP packages are installed and up to date
+      yum:
+        name:
+          - php
+          - php-mysqlnd
+        state: latest
+    - name: Copy in custom index.php file
+      copy:
+        src: files/index.php
+        dest: /var/www/html/index.php
+    - name: Move existing index.html out of the way
+      command: mv /var/www/html/index.html /var/www/html/index.html_OLD
+    - name: recycle apache http service to reflect index update
+      service:
+        name: httpd
+        state: restarted
+    - name: Test out entire lamp stack 
+      uri:
+        url: "http://{{ inventory_hostname}}"
+        return_content: yes
+        status_code: 200
+      register: db_connect_output
+    - name: Print content of index.php
+      debug:
+        var: db_connect_output.content
+    - name: Ensure db connection was successful
+      assert:
+        that:
+        - "'successful' in db_connect_output.content"
+
+
+
 

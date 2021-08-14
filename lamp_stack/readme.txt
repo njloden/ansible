@@ -1,4 +1,4 @@
-# add user devops on control node and all remote hosts
+# add user devops on control node and all managed hosts
 useradd devops
 
 # update password for devops user
@@ -13,13 +13,13 @@ su - devops
 # on control node, create ssh key pair to allow passwordless ssh access
 ssh-keygen
 
-# on control node, copy ssh public key to all remote hosts
+# on control node, copy ssh public key to all managed hosts
 ssh-copy-id devops@<remote_host>
 
-# on control node, test ssh to remote hosts and ensure not prompted for password
+# on control node, test ssh to managed hosts and ensure not prompted for password
 ssh devops@<remote_host>
 
-# if ssh to remote host is successful, test out sudo access and ensure it is passwordless as well
+# if ssh to managed host is successful, test out sudo access and ensure it is passwordless as well
 sudo -l
 
 # check syntax of playbook before running
