@@ -1,31 +1,59 @@
-# add user devops on control node and all managed hosts
+## Prerequisites:
+Install ansible on a control node before proceeding.
+
+Official Ansible install reference:
+https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+
+## Build Procedure:
+1. Add user 'devops' on control node and all managed hosts:  
+```shell
 useradd devops
+```
 
-# update password for devops user
+2. Update password for devops user:  
+```shell
 passwd devops
+```
 
-# copy file into /etc/sudoers.d directory to grant devops user passwordless sudo access:
+3. Copy devops_sudo file into /etc/sudoers.d directory to grant devops user passwordless sudo access on control node and all managed hosts:
+```shell  
 cp files/devops_sudo /etc/sudoers.d
+```
 
-# on control node, switch user to devops
+4. On control node, switch user to devops:  
+```shell  
 su - devops
+```
 
-# on control node, create ssh key pair to allow passwordless ssh access
+5. On control node, create ssh key pair to allow passwordless ssh access:  
+```shell 
 ssh-keygen
+```
 
-# on control node, copy ssh public key to all managed hosts
+6. On control node, copy ssh public key to all managed hosts:
+```shell
 ssh-copy-id devops@<remote_host>
+```
 
-# on control node, test ssh to managed hosts and ensure not prompted for password
+7. On control node, test ssh to managed hosts and ensure not prompted for password:  
+```shell
 ssh devops@<remote_host>
+```
 
-# if ssh to managed host is successful, test out sudo access and ensure it is passwordless as well
+8. If ssh to managed host is successful, test out sudo access and ensure it is passwordless as well:  
+```shell
 sudo -l
+```
 
-# check syntax of playbook before running
+9. On control node, check syntax of playbook before running:  
+```shell
 ansible-playbook --syntax-check playbook.yml
+```
 
-# run playbook
+10. On control node, run playbook and ensure it completes without any errors:  
+```shell
 ansible-playbook playbook.yml
+```
 
+![lamp_stack_ansible_output](lamp_stack_ansible_output.png)
 
