@@ -29,6 +29,11 @@ if (!$table_check) {
 // query connection count to get current value
 $result = mysqli_query($db_connection, "SELECT COUNT FROM mysql.CONN_COUNT where ID=1");
 
+// extract count value from query result
+while($row = mysqli_fetch_array($result)) {
+  echo $row[0];
+}
+
 // STOPPED HERE - need to figure out how to properly extract count value 
 // then increment
 // then update count in db
