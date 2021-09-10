@@ -61,6 +61,7 @@
       mysql_user:
         name: db_user
         password: db_pass
+        privs: '*.*:ALL'
         state: present
 
     ####
