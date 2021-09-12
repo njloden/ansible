@@ -12,7 +12,7 @@ if (!$db_connection) {
 }
 
 // db connection was successful
-echo "Connection to database was successful!";
+echo "Connection to database was successful!<br/>";
 
 // check to see if connection count table exists
 $table_check = mysqli_query($db_connection, "SELECT * FROM mysql.CONN_COUNT");
@@ -31,14 +31,27 @@ $result = mysqli_query($db_connection, "SELECT COUNT FROM mysql.CONN_COUNT where
 
 // extract count value from query result
 while($row = mysqli_fetch_array($result)) {
-  echo $row[0];
+  $current_count = $row[0];
 }
 
-// STOPPED HERE - need to figure out how to properly extract count value 
-// then increment
-// then update count in db
-// then query again, extract, and print back to user
+// increment current count
+$current_count++;
 
+// update connection count record with updated count value
+mysqli_query($db_connection, "UPDATE mysql.CONN_COUNT SET COUNT=$current_count where ID=1");
+
+// query connection count and get updated value from db
+$result = mysqli_query($db_connection, "SELECT COUNT FROM mysql.CONN_COUNT where ID=1");
+
+// extract count value from query result
+while($row = mysqli_fetch_array($result)) {
+  $current_count = $row[0];
+}
+
+// print out connection count info
+echo "Total lifetime db connections established: $current_count";
+
+// close database connection
 mysqli_close($db_connection);
 ?>
 
